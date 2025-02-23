@@ -1,0 +1,62 @@
+name: iOS-ipa-build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: 🎉 iOS Build
+    runs-on: macos-latest
+
+    steps:
+      # 1. Checkout du code source
+      - uses: actions/checkout@v3
+
+      # 2. Configuration de Flutter
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          architecture: x64
+
+      # 3. Vérification de Flutter et installation des dépendances
+      - run: flutter pub get
+      - run: flutter doctor
+
+      # 4. Mise à jour de CocoaPods
+      - run: pod deintegrate
+        working-directory: ios
+      - run: pod install --repo-update
+        working-directory: ios
+
+      # 5. Nettoyage des fichiers intermédiaires
+      - run: flutter clean
+
+      # 6. Construction de l'application iOS
+      - run: flutter build ios --release --no-codesign
+
+      # 7. Vérification des fichiers générés
+      - run: ls -la build/ios/iphoneos
+
+      # 8. Préparation du fichier IPA
+      - run: mkdir Payload
+        working-directory: build/ios/iphoneos
+
+      - run: mv Runner.app/ Payload
+        working-directory: build/ios/iphoneos
+
+      - name: Zip output
+        run: |
+          if [ -d "Payload" ]; then
+            zip -qq -r -9 FlutterIpaExport.ipa Payload
+          fi
+        working-directory: build/ios/iphoneos
+
+      # 9. Téléchargement du fichier IPA dans une Release GitHub
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/ios/iphoneos/FlutterIpaExport.ipa
+          tag: v1.0
+          overwrite: true
+          body: "First release"

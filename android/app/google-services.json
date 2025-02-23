@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "34612324531",
+    "project_id": "appointy-a52ab",
+    "storage_bucket": "appointy-a52ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34612324531:android:7c45b6c8f72bd7790268c6",
+        "android_client_info": {
+          "package_name": "com.example.appointy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9iDQuuMNUQLORSmINmOWi1O9WNusmeeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
